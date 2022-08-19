@@ -16,10 +16,7 @@ require('dotenv/config')
 app.use(bodyParser.json({ urlencoded: true }))
 app.use("/auth", cors(corsOptions), authRoute)
 app.use("/dashboard", cors(corsOptions), chatRoute)
-app.get("/hi", async (req, res) => {
-    res.write("hi")
-    res.send("he")
-})
+
 
 app.listen(process.env.PORT, (err) => {
     if(!err){
