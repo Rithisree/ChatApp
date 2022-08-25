@@ -42,4 +42,23 @@ const listUserDetails = async(req,res) => {
     }
 }
 
-module.exports = {testing, listUser, listUserDetails}
+const listReceiverDetails = async(req,res) => {
+    try {
+        const {receiverId} = req.body
+        const getUserDetails = await user.findById({_id:receiverId})
+
+        return res.status(200).json({
+            "status":true,
+            "data":getUserDetails
+        })
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":error
+        })
+    }
+}
+
+
+
+module.exports = {testing, listUser, listUserDetails, listReceiverDetails}
