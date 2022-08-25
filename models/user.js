@@ -13,6 +13,15 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    about:{
+        type: String,
+        required: true,
+        default: "Hey There!"
+    },
+    img:{
+        type: String,
+        required: false,
+    },
     verifyStatus:{
         type: String,
         required: false

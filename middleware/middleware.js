@@ -7,7 +7,6 @@ const verifyToken = async(req,res,next) => {
 
         if(token){
             const decoded = jwt.verify(token,process.env.TOKENID)
-            console.log(decoded)
             if(decoded){
                 req.user = decoded
             }

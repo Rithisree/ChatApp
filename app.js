@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const authRoute = require('./routes/authRoute')
 const chatRoute = require('./routes/chatRoute')
+const messageRoute = require('./routes/messageRoute')
 
 const app = express()
 const corsOptions = {
@@ -16,7 +17,7 @@ require('dotenv/config')
 app.use(bodyParser.json({ urlencoded: true }))
 app.use("/auth", cors(corsOptions), authRoute)
 app.use("/dashboard", cors(corsOptions), chatRoute)
-
+app.use("/message", cors(corsOptions), messageRoute)
 
 app.listen(process.env.PORT, (err) => {
     if(!err){

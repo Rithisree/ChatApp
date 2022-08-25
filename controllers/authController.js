@@ -326,4 +326,7 @@ const resetPassword = async(req,res) => {
     }
 }
 
+
+
+
 module.exports = { register, activate, login, resendMail, forgetPassword, resetPassword }
