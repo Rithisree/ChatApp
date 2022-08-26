@@ -12,7 +12,7 @@ const listUser = async(req,res) => {
     
     try{
         const {userId} = req.user
-        const getUser = await user.find({_id:{$ne:userId}, status:1})
+        const getUser = await user.find({_id:{$ne:userId}, status:1, verifyStatus:"success"})
         return res.status(200).json({
             "status":true,
             "data":getUser
@@ -42,6 +42,30 @@ const listUserDetails = async(req,res) => {
     }
 }
 
+const updateUserAvathar = async(req,res) => {
+    try {
+        const {userId} = req.user
+        const {imageUrl} = req.body 
+
+        const getUser = await user.findByIdAndUpdate(userId,{
+            $set:{
+                img:imageUrl
+            }
+        })
+        console.log(getUser)
+        return res.status(200).json({
+            "status":true,
+            "data":"Image Uploaded"
+        })
+
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":error
+        })
+    }
+}
+
 const listReceiverDetails = async(req,res) => {
     try {
         const {receiverId} = req.body
@@ -61,4 +85,4 @@ const listReceiverDetails = async(req,res) => {
 
 
 
-module.exports = {testing, listUser, listUserDetails, listReceiverDetails}
+module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar}

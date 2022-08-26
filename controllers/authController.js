@@ -15,8 +15,8 @@ const resetTemplate = handlebars.compile(resetPasswordFile)
 let transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "rithisathaiyan@gmail.com",
-        pass: "wtvpgrjbubzdtsts"
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
     }
 })
 
@@ -50,7 +50,7 @@ const register = async(req,res) => {
             to: newUser.email,
             subject: "User Account Verification",
             html: verifyTemplate({
-                url: "http://localhost:3000",
+                url: process.env.FRONTENDURL,
                 token:token
             })
         }
@@ -212,7 +212,7 @@ const resendMail = async(req,res) => {
                 to: getUser.email,
                 subject: "User Account Verification",
                 html: verifyTemplate({
-                    url: "http://localhost:3000",
+                    url: process.env.FRONTENDURL,
                     token:token
                 })
             }
@@ -259,7 +259,7 @@ const forgetPassword = async(req,res) => {
                 to: getUser.email,
                 subject: "Reset Password",
                 html: resetTemplate({
-                    url: "http://localhost:3000",
+                    url: process.env.FRONTENDURL,
                     token:token
                 })
             }

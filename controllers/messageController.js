@@ -63,8 +63,8 @@ const listMsg = async(req,res) => {
         const {userId} = req.user
         const {receiverId} = req.body
 
-        const getMessages = await message.find({senderId:userId, receiverId:receiverId}).populate({path:"messages", model:"userMessageInfo", select:{_id:1, message:1, createdAt:1, userId:1}}).populate({path:"receiverId", model:"user", select:{_id:1, name:1}})
-
+        const getMessages = await message.find({senderId:userId, receiverId:receiverId}).populate({path:"messages", model:"userMessageInfo", select:{_id:1, message:1, createdAt:1, userId:1}}).populate({path:"receiverId", model:"user", select:{_id:1, name:1, img:1}})
+        
         return res.status(200).json({
             "status":true,
             "data":getMessages,
