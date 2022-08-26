@@ -25,6 +25,23 @@ const listUser = async(req,res) => {
     }
 }
 
+const listUserBasedOnId = async(req,res) => {
+    
+    try{
+        const {receiverId} = req.body
+        const getUser = await user.find({_id:receiverId, status:1})
+        return res.status(200).json({
+            "status":true,
+            "data":getUser
+        })
+    }catch(error){
+        return res.status(400).json({
+            "status":false,
+            "message":"No Users Found"
+        })
+    }
+}
+
 const listUserDetails = async(req,res) => {
     try {
         const {userId} = req.user
@@ -85,4 +102,4 @@ const listReceiverDetails = async(req,res) => {
 
 
 
-module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar}
+module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId}

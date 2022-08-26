@@ -78,4 +78,5 @@ const listMsg = async(req,res) => {
     }
 }
 
+
 module.exports = {createMessage, listMsg}
