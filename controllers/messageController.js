@@ -33,26 +33,26 @@ const createMessage = async(req,res) => {
                     messages: newMessageInfo._id
                 }
             })
+        }
 
-            if(getMessageViceVersa == 0){
-                const newMessage = new message({
-                    senderId: receiverId,
-                    receiverId: userId,
-                })
-                await newMessage.save()
+        if(getMessageViceVersa == 0){
+            const newMessage = new message({
+                senderId: receiverId,
+                receiverId: userId,
+            })
+            await newMessage.save()
 
-                await message.findByIdAndUpdate(newMessage._id,{
-                    $push:{
-                        messages: newMessageInfo._id
-                    }
-                })
-            }else{
-                await message.findOneAndUpdate({senderId:receiverId, receiverId: userId},{
-                    $push:{
-                        messages: newMessageInfo._id
-                    }
-                })
-            }
+            await message.findByIdAndUpdate(newMessage._id,{
+                $push:{
+                    messages: newMessageInfo._id
+                }
+            })
+        }else{
+            await message.findOneAndUpdate({senderId:receiverId, receiverId: userId},{
+                $push:{
+                    messages: newMessageInfo._id
+                }
+            })
         }
 
     

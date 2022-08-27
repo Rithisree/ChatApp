@@ -100,6 +100,30 @@ const listReceiverDetails = async(req,res) => {
     }
 }
 
+const updateUserDetails = async(req,res) => {
+    try {
+        const {name, about} = req.body
+        const {userId} = req.user
 
+        await user.findByIdAndUpdate(userId, {
+            $set:{
+                name:name,
+                about:about
+            }
+        })
 
-module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId}
+        return res.status(200).json({
+            "status":true,
+            "data":"Updated Successfully"
+        })
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":error
+            
+        })
+    }
+
+}
+
+module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId, updateUserDetails}
