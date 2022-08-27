@@ -19,9 +19,14 @@ const createMessage = async(req,res) => {
             const newMessage = new message({
                 senderId: userId,
                 receiverId,
-                messages: newMessageInfo._id
             })
             await newMessage.save()
+
+            await message.findByIdAndUpdate(newMessage._id,{
+                $push:{
+                    messages: newMessageInfo._id
+                }
+            })
         }else{
             await message.findOneAndUpdate({senderId:userId, receiverId:receiverId},{
                 $push:{
@@ -33,9 +38,14 @@ const createMessage = async(req,res) => {
                 const newMessage = new message({
                     senderId: receiverId,
                     receiverId: userId,
-                    messages: newMessageInfo._id
                 })
                 await newMessage.save()
+
+                await message.findByIdAndUpdate(newMessage._id,{
+                    $push:{
+                        messages: newMessageInfo._id
+                    }
+                })
             }else{
                 await message.findOneAndUpdate({senderId:receiverId, receiverId: userId},{
                     $push:{
