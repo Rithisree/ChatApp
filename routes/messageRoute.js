@@ -5,6 +5,7 @@ const middle = require('../middleware/middleware')
 
 messageRoute.post("/sendmessage", middle, messageController.createMessage)
 messageRoute.post("/listmessage", middle, messageController.listMsg)
+messageRoute.post("/deletemessage", middle, messageController.deleteMessage)
 
 
 module.exports = messageRoute

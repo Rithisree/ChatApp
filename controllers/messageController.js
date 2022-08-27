@@ -88,5 +88,29 @@ const listMsg = async(req,res) => {
     }
 }
 
+const deleteMessage = async(req,res) => {
+    try {
+        const {userId} = req.user
+        const {receiverId} = req.body
+        
+        await message.findOneAndUpdate({senderId:userId, receiverId:receiverId},{
+            $set:{
+                messages:[]
+            }
+        })
+        const getUser = await message.find({senderId:userId, receiverId:receiverId})
+        console.log(getUser)
+        return res.status(200).json({
+            "status":true,
+            "data":"Deleted Successfully"
+        })
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":error
+            
+        })
+    }
+}
 
-module.exports = {createMessage, listMsg}
+module.exports = {createMessage, listMsg, deleteMessage}

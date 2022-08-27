@@ -69,7 +69,6 @@ const updateUserAvathar = async(req,res) => {
                 img:imageUrl
             }
         })
-        console.log(getUser)
         return res.status(200).json({
             "status":true,
             "data":"Image Uploaded"
@@ -125,5 +124,7 @@ const updateUserDetails = async(req,res) => {
     }
 
 }
+
+
 
 module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId, updateUserDetails}

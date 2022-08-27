@@ -168,7 +168,8 @@ const login = async(req,res) => {
 
                     return res.status(200).json({
                         "status":true,
-                        "data":token
+                        "data":token,
+                        "userId":getUser._id
                     })
                 }
                 else{
