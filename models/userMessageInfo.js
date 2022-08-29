@@ -10,6 +10,10 @@ const userMessageInfoSchema = mongoose.Schema({
         ref:"user",
         required:true
     },
+    readStatus:{
+        type: Boolean,
+        default: false
+    },
     status:{
         type: Number,
         default:1

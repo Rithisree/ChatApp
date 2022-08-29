@@ -42,6 +42,7 @@ const io = socket(server, {
 })
 
 global.onlineUsers = new Map()
+global.offlineUsers = new Map()
 const online = []
 
 io.on("connection", (socket) => {
@@ -50,6 +51,35 @@ io.on("connection", (socket) => {
         online.push({"userId":userId, "socketId": socket.id})
         console.log(onlineUsers)
     })
+    socket.on("get-online", (data) => {
+        const getUser = onlineUsers.get(data)
+        console.log(getUser)
+        if(getUser !== undefined){
+            socket.emit("online-user", {status:true})
+        }else{
+        
+            const sendUserSocket = offlineUsers.get(data)
+            console.log("offlien",sendUserSocket)
+            if(sendUserSocket !== undefined){
+                console.log("HI")
+                socket.to(sendUserSocket).emit("online-user", {status:false, lastSeen:"10:34"})
+            }
+            else{
+                console.log("else")
+                socket.emit("online-user", {status:false})
+            }
+        }
+    })
+    socket.on("remove-user", (data) => {
+        // const sendUserSocket = onlineUsers.get(data)
+        
+        // if(sendUserSocket !== undefined){
+        //     socket.to(sendUserSocket).emit("online-user", {status:"false", lastSeen:"10:34"})
+        // }
+        onlineUsers.delete(data)
+        offlineUsers.set(data, socket.id)
+    })
+    
     socket.on("send-msg", (data) => {
         console.log(data)
         const sendUserSocket = onlineUsers.get(data.receiverId)

@@ -10,5 +10,6 @@ chatRoute.post("/listreceiverdetails", middle, chatController.listReceiverDetail
 chatRoute.post("/updateuseravathar", middle, chatController.updateUserAvathar)
 chatRoute.post("/listuserbasedonid", middle, chatController.listUserBasedOnId)
 chatRoute.post("/updateuserdetails", middle, chatController.updateUserDetails)
+chatRoute.post("/updatelastseen", middle, chatController.updateLastSeen)
 
 module.exports = chatRoute

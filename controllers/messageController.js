@@ -73,8 +73,8 @@ const listMsg = async(req,res) => {
         const {userId} = req.user
         const {receiverId} = req.body
 
-        const getMessages = await message.find({senderId:userId, receiverId:receiverId}).populate({path:"messages", model:"userMessageInfo", select:{_id:1, message:1, createdAt:1, userId:1}}).populate({path:"receiverId", model:"user", select:{_id:1, name:1, img:1}})
-        
+        const getMessages = await message.find({senderId:userId, receiverId:receiverId}).populate({path:"messages", model:"userMessageInfo", select:{_id:1, message:1, createdAt:1, userId:1, readStatus:1}}).populate({path:"receiverId", model:"user", select:{_id:1, name:1, img:1}})
+
         return res.status(200).json({
             "status":true,
             "data":getMessages,
@@ -113,4 +113,39 @@ const deleteMessage = async(req,res) => {
     }
 }
 
-module.exports = {createMessage, listMsg, deleteMessage}
+const doubleTick = async(req, res) => {
+    // try {
+        const {userId}= req.user
+        const {receiverId} = req.body
+        const getMessagesViceVersa = await message.find({receiverId:userId, senderId:receiverId}).populate({path:"messages", model:"userMessageInfo", select:{_id:1, message:1, createdAt:1, userId:1}}).populate({path:"receiverId", model:"user", select:{_id:1, name:1, img:1}})
+        console.log(getMessagesViceVersa)
+        if(getMessagesViceVersa.length>0){
+            console.log("hi")
+            const getMessagePromise = getMessagesViceVersa[0].messages.map(async(ele) => {
+                console.log("id",ele._id)
+                await userMessageInfo.findByIdAndUpdate(ele._id, {
+                    $set:{
+                        readStatus:true
+                    }
+                })
+            })
+            
+            await Promise.all(getMessagePromise)
+
+        }
+        
+        
+        return res.status(200).json({
+            "status":true
+        })
+    // } catch (error) {
+    //     return res.status(400).json({
+    //         "status":false,
+    //         "message":error
+            
+    //     })
+    // }
+}
+
+
+module.exports = {createMessage, listMsg, deleteMessage, doubleTick}
