@@ -10,9 +10,19 @@ const userMessageInfoSchema = mongoose.Schema({
         ref:"user",
         required:true
     },
+    receiverId:{
+        type:mongoose.Types.ObjectId,
+        ref:"user",
+        required:true
+    },
     readStatus:{
         type: Boolean,
         default: false
+    },
+    lastMsgSentBy:{
+        type:mongoose.Types.ObjectId,
+        ref:"user",
+        required:false
     },
     status:{
         type: Number,

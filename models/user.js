@@ -30,6 +30,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    addContacts:[{
+        type:mongoose.Types.ObjectId,
+        ref:"user",
+        required:false
+    }],
     status:{
         type: Number,
         default: 1

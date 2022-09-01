@@ -7,6 +7,6 @@ messageRoute.post("/sendmessage", middle, messageController.createMessage)
 messageRoute.post("/listmessage", middle, messageController.listMsg)
 messageRoute.post("/deletemessage", middle, messageController.deleteMessage)
 messageRoute.post("/doubletick", middle, messageController.doubleTick)
-
+messageRoute.get("/lastmsg", middle, messageController.lastMsg)
 
 module.exports = messageRoute

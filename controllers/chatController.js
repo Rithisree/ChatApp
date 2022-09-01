@@ -1,13 +1,4 @@
-const { findById } = require('../models/user')
 const user = require('../models/user')
-const testing = async(req,res) => {
-    console.log("Hello, I'm testing Middleware")
-
-    return res.status(200).json({
-        "status":true,
-        "data":"Middleware Done"
-    })
-}
 
 const listUser = async(req,res) => {
     
@@ -130,7 +121,7 @@ const updateLastSeen = async(req,res) => {
     try {
         let currentTime = new Date()
         const { receiverId } = req.body
-        const time = currentTime.toLocaleTimeString("en-US", {hour:"2-digit", minute:"2-digit"})
+        const time = currentTime.toLocaleString("en-US", {month:'short', day:'numeric', timeZone:"Asia/Kolkata", hour:"2-digit", minute:"2-digit"})
         await user.findByIdAndUpdate(receiverId,{
             $set:{
                 lastSeen:time
@@ -152,4 +143,4 @@ const updateLastSeen = async(req,res) => {
 
 
 
-module.exports = {testing, listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId, updateUserDetails, updateLastSeen}
+module.exports = { listUser, listUserDetails, listReceiverDetails, updateUserAvathar, listUserBasedOnId, updateUserDetails, updateLastSeen}
