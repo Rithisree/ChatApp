@@ -17,32 +17,32 @@ const createMessage = async(req,res) => {
                     alreadyUser = true
                 }
             }  
-            else{
-                if(alreadyUser == false){
-                    await user.findByIdAndUpdate(userId, {
-                        $push:{
-                            addContacts:receiverId
-                        }
-                    })
-                }
-            } 
+            console.log(alreadyUser)           
         }
+        if(alreadyUser == false){
+            console.log("fir hi")
+            await user.findByIdAndUpdate(userId, {
+                $push:{
+                    addContacts:receiverId
+                }
+            })
+        }
+        
         const getReceiver = await user.findById(receiverId)
         for(let i=0;i<=getReceiver.addContacts.length;i++){
             if(getReceiver.addContacts.length>0){
                 if(mongoose.Types.ObjectId(receiverId).equals(getReceiver.addContacts[i])){
                     alreadyUser = true
                 }
-            }
-            else{
-                if(alreadyUser == false){
-                    await user.findByIdAndUpdate(receiverId, {
-                        $push:{
-                            addContacts:userId
-                        }
-                    })
+            }            
+        }
+        if(alreadyUser == false){
+            console.log("sec hi")
+            await user.findByIdAndUpdate(receiverId, {
+                $push:{
+                    addContacts:userId
                 }
-            }
+            })
         }
         const getMessage = await message.find({senderId:userId, receiverId:receiverId})
         const getMessageViceVersa = await message.find({senderId:receiverId, receiverId: userId})
@@ -193,20 +193,22 @@ const doubleTick = async(req, res) => {
 }
 
 const lastMsg = async(req,res) => {
-    try {
+    //try {
         const {userId} = req.user
         const getUser = await user.findById(userId).select({_id:1, name:1, addContacts:1})
-        const getMessages = await message.find({status:1}).populate({path:"messages", model:"userMessageInfo"})
+        const getMessages = await message.find({status:1, receiverId:userId}).populate({path:"messages", model:"userMessageInfo"})
     
         let lastMsg = []
         let getLastMsg = []
-
+        console.log(getUser)
         if(getUser.addContacts.length > 0){
             if(getMessages.length >0){
                 const userPromise = getUser.addContacts.map(async(element) => {
+                    
                         for(let i=0; i<getMessages.length; i++){
                         if((element._id).equals(getMessages[i].senderId)){
                             const filteredMessages = getMessages[i].messages
+                        
                             const length = filteredMessages.length
                             await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
                                 $set:{
@@ -218,7 +220,9 @@ const lastMsg = async(req,res) => {
                         }
                         else{
                             if((element._id).equals(getMessages[i].receiverId)){
+                    
                                 const filteredMessages = getMessages[i].messages
+                               
                                 const length = filteredMessages.length
                                 await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
                                     $set:{
@@ -247,13 +251,13 @@ const lastMsg = async(req,res) => {
             "status":true,
             "data": getLastMsg
         })
-    } catch (error) {
-        return res.status(400).json({
-            "status":false,
-            "message":error
+    // } catch (error) {
+    //     return res.status(400).json({
+    //         "status":false,
+    //         "message":error
             
-        })
-    }
+    //     })
+    // }
 }
 
 
