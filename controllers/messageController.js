@@ -190,7 +190,7 @@ const doubleTick = async(req, res) => {
 }
 
 const lastMsg = async(req,res) => {
-    //try {
+    try {
         const {userId} = req.user
         const getUser = await user.findById(userId).select({_id:1, name:1, addContacts:1})
         const getMessages = await message.find({status:1, receiverId:userId}).populate({path:"messages", model:"userMessageInfo"})
@@ -247,13 +247,13 @@ const lastMsg = async(req,res) => {
             "status":true,
             "data": getLastMsg
         })
-    // } catch (error) {
-    //     return res.status(400).json({
-    //         "status":false,
-    //         "message":error
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":error
             
-    //     })
-    // }
+        })
+    }
 }
 
 

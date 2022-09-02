@@ -155,7 +155,7 @@ const getDecodedReset = (token) => {
 }
 
 const login = async(req,res) => {
-    try {
+    // try {
         const { email, password } = req.body
         const getUser = await user.findOne({email:email})
 
@@ -192,12 +192,12 @@ const login = async(req,res) => {
                 "message":"User Doesn't Exist"
             })
         }
-    } catch (error) {
-        return res.status(400).json({
-            "status":false,
-            "message":error
-        })
-    }
+    // } catch (error) {
+    //     return res.status(400).json({
+    //         "status":false,
+    //         "message":error
+    //     })
+    // }
 
 }
 
