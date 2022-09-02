@@ -16,11 +16,9 @@ const createMessage = async(req,res) => {
                 if(mongoose.Types.ObjectId(receiverId).equals(getUser.addContacts[i])){
                     alreadyUser = true
                 }
-            }  
-            console.log(alreadyUser)           
+            }            
         }
         if(alreadyUser == false){
-            console.log("fir hi")
             await user.findByIdAndUpdate(userId, {
                 $push:{
                     addContacts:receiverId
@@ -37,7 +35,6 @@ const createMessage = async(req,res) => {
             }            
         }
         if(alreadyUser == false){
-            console.log("sec hi")
             await user.findByIdAndUpdate(receiverId, {
                 $push:{
                     addContacts:userId
@@ -200,7 +197,7 @@ const lastMsg = async(req,res) => {
     
         let lastMsg = []
         let getLastMsg = []
-        console.log(getUser)
+        let count = 0;
         if(getUser.addContacts.length > 0){
             if(getMessages.length >0){
                 const userPromise = getUser.addContacts.map(async(element) => {
@@ -208,8 +205,8 @@ const lastMsg = async(req,res) => {
                         for(let i=0; i<getMessages.length; i++){
                         if((element._id).equals(getMessages[i].senderId)){
                             const filteredMessages = getMessages[i].messages
-                        
                             const length = filteredMessages.length
+                    
                             await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
                                 $set:{
                                     lastMsgSentBy:element._id
@@ -222,8 +219,8 @@ const lastMsg = async(req,res) => {
                             if((element._id).equals(getMessages[i].receiverId)){
                     
                                 const filteredMessages = getMessages[i].messages
-                               
                                 const length = filteredMessages.length
+            
                                 await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
                                     $set:{
                                         lastMsgSentBy:element._id
@@ -246,7 +243,6 @@ const lastMsg = async(req,res) => {
             getLastMsg.push(getLastMsgDet)
         })
         await Promise.all(getLastMsgPromise)
-
         return res.status(200).json({
             "status":true,
             "data": getLastMsg
