@@ -140,7 +140,6 @@ const deleteMessage = async(req,res) => {
                 messages:[]
             }
         })
-        const getUser = await message.find({senderId:userId, receiverId:receiverId})
        
         return res.status(200).json({
             "status":true,
@@ -193,46 +192,52 @@ const lastMsg = async(req,res) => {
     try {
         const {userId} = req.user
         const getUser = await user.findById(userId).select({_id:1, name:1, addContacts:1})
-        const getMessages = await message.find({status:1, receiverId:userId}).populate({path:"messages", model:"userMessageInfo"})
-    
+        const getMessages = await message.find({status:1, senderId:userId}).populate({path:"messages", model:"userMessageInfo"})
+        console.log(getMessages)
         let lastMsg = []
         let getLastMsg = []
-        let count = 0;
+       
         if(getUser.addContacts.length > 0){
             if(getMessages.length >0){
                 const userPromise = getUser.addContacts.map(async(element) => {
                     
                         for(let i=0; i<getMessages.length; i++){
                         if((element._id).equals(getMessages[i].senderId)){
+                            
                             const filteredMessages = getMessages[i].messages
+                            
                             const length = filteredMessages.length
-                    
-                            await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
-                                $set:{
-                                    lastMsgSentBy:element._id
-                                }
-                            })
-                            lastMsg.push(filteredMessages[length-1])
-                            break
-                        }
-                        else{
-                            if((element._id).equals(getMessages[i].receiverId)){
-                    
-                                const filteredMessages = getMessages[i].messages
-                                const length = filteredMessages.length
-            
+                            if(length>0){
                                 await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
                                     $set:{
                                         lastMsgSentBy:element._id
                                     }
                                 })
+                            }
+                            
+                            lastMsg.push(filteredMessages[length-1])
+                            break
+                        }
+                        
+                        else{
+
+                            if((element._id).equals(getMessages[i].receiverId)){
+                                console.log("elseif")
+                                const filteredMessages = getMessages[i].messages
+                                const length = filteredMessages.length
+                                if(length>0){
+                                    await userMessageInfo.findByIdAndUpdate(getMessages[i].messages[length-1]._id,{
+                                        $set:{
+                                            lastMsgSentBy:element._id
+                                        }
+                                    })
+                                }
                                 lastMsg.push(filteredMessages[length-1])
                                 break
                             }
                         }
                     }
-                    // })
-                    // await Promise.all(messagePromise)
+                    
                 })
                 await Promise.all(userPromise)
             }
