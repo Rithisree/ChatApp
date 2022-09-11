@@ -332,10 +332,15 @@ const resetPassword = async(req,res) => {
 
 
 const googleSignIn = async(req,res) => {
-    try {
+    // try {
         const {GoogleToken} = req.body
         let token;
         let userId;
+        if(GoogleToken == undefined){
+            return res.status(400).json({
+                "status":false
+            })
+        }
         const ticket = await client.verifyIdToken({
             idToken:GoogleToken,
             audience: process.env.G00GLECLIENTID
@@ -355,7 +360,7 @@ const googleSignIn = async(req,res) => {
             userId = getUser._id
             token = jwt.sign({ userId: getUser._id, email: getUser.email, name: getUser.name }, process.env.TOKENID, {expiresIn:"2d"})
         }else{
-            const encryptPassword = await bcrypt.hash(Date().now, 10)
+            const encryptPassword = await bcrypt.hash("password", 10)
             const newUser = new user ({
                 name,
                 email,
@@ -372,12 +377,12 @@ const googleSignIn = async(req,res) => {
             "data":token,
             "userId":userId
         })
-    } catch (error) {
-        return res.status(400).json({
-            "status":false,
-            "message":"Login Failed!"
-        })
-    }
+    // } catch (error) {
+    //     return res.status(400).json({
+    //         "status":false,
+    //         "message":"Login Failed!"
+    //     })
+    // }
 }
 
 
