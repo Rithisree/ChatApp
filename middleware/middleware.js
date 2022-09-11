@@ -4,7 +4,7 @@ require("dotenv/config")
 const verifyToken = async(req,res,next) => {
     try {
         const token = req.headers["x_access_token"]
-
+       
         if(token){
             const decoded = jwt.verify(token,process.env.TOKENID)
             if(decoded){
@@ -23,6 +23,7 @@ const verifyToken = async(req,res,next) => {
                 "message":"Invalid Token"
             })
         }
+        console.log(req.user)
         return next()
     } catch (error) {
         return res.status(400).json({

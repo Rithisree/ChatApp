@@ -12,6 +12,9 @@ const verifyTemplate = handlebars.compile(verifyFile)
 const resetPasswordFile = fs.readFileSync(path.resolve(__dirname, "../views/resetpass.hbs"), 'utf8')
 const resetTemplate = handlebars.compile(resetPasswordFile)
 
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client(process.env.G00GLECLIENTID)
+
 let transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -164,7 +167,7 @@ const login = async(req,res) => {
                 const passwordCheck = await bcrypt.compare(password, getUser.password)
                 
                 if(passwordCheck){
-                    const token = jwt.sign({userId:getUser._id, email:getUser.email, name:getUser.name}, process.env.TOKENID, {expiresIn:"1d"})
+                    const token = jwt.sign({userId:getUser._id, email:getUser.email, name:getUser.name}, process.env.TOKENID, {expiresIn:"2d"})
 
                     return res.status(200).json({
                         "status":true,
@@ -328,6 +331,54 @@ const resetPassword = async(req,res) => {
 }
 
 
+const googleSignIn = async(req,res) => {
+    try {
+        const {GoogleToken} = req.body
+        let token;
+        let userId;
+        const ticket = await client.verifyIdToken({
+            idToken:GoogleToken,
+            audience: process.env.G00GLECLIENTID
+        });
+        const {name, email} = ticket.getPayload();
+
+        const getUser = await user.findOne({email:email})
+      
+        if(getUser){
+            if(getUser.verifyStatus == "pending"){
+                await user.findOneAndUpdate({email:email}, {
+                    $set:{
+                        verifyStatus:"success"
+                    }
+                })
+            }
+            userId = getUser._id
+            token = jwt.sign({ userId: getUser._id, email: getUser.email, name: getUser.name }, process.env.TOKENID, {expiresIn:"2d"})
+        }else{
+            const encryptPassword = await bcrypt.hash(Date().now, 10)
+            const newUser = new user ({
+                name,
+                email,
+                password: encryptPassword.toString(),
+                verifyStatus: "success"
+            })
+            await newUser.save()
+            userId = newUser._id
+            token = jwt.sign({ userId: newUser._id, email: newUser.email, name: newUser.name }, process.env.TOKENID, {expiresIn:"2d"})
+        }
+
+        return res.status(200).json({
+            "status":true,
+            "data":token,
+            "userId":userId
+        })
+    } catch (error) {
+        return res.status(400).json({
+            "status":false,
+            "message":"Login Failed!"
+        })
+    }
+}
 
 
-module.exports = { register, activate, login, resendMail, forgetPassword, resetPassword }
+module.exports = { register, activate, login, resendMail, forgetPassword, resetPassword, googleSignIn }

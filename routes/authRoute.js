@@ -2,6 +2,7 @@ const express = require('express')
 const authRoute = express.Router()
 const authController = require('../controllers/authController')
 
+authRoute.post("/googlesignin", authController.googleSignIn)
 authRoute.post("/register", authController.register)
 authRoute.post("/activate", authController.activate)
 authRoute.post("/login", authController.login)

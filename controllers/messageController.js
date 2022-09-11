@@ -193,7 +193,6 @@ const lastMsg = async(req,res) => {
         const {userId} = req.user
         const getUser = await user.findById(userId).select({_id:1, name:1, addContacts:1})
         const getMessages = await message.find({status:1, senderId:userId}).populate({path:"messages", model:"userMessageInfo"})
-        console.log(getMessages)
         let lastMsg = []
         let getLastMsg = []
        
@@ -222,7 +221,6 @@ const lastMsg = async(req,res) => {
                         else{
 
                             if((element._id).equals(getMessages[i].receiverId)){
-                                console.log("elseif")
                                 const filteredMessages = getMessages[i].messages
                                 const length = filteredMessages.length
                                 if(length>0){
